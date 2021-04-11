@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .wrapper {
+            position: relative;
+            min-height: 316;
+        }
+        .slider {
+            position: relative;
+        }
+        .slider_container {
+            height: 100%;
+            overflow: hidden;
+        }
+        .slider_track {
+            height: 100%;
+            display: flex;
+            transition: .2s;
+        }
+        .slider_item {
+            height: 100%;
+        }
+        .btn_prev, .btn_next {
+            width: 6%;
+            height: 16%;
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            transform: translate(0, -50%);
+        }
+        .btn_next {
+            right: 0;
+        }
+        .btn_prev {
+            left: 0;
+        }
+        .slider-dot-wrapper {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            left: 50%;
+            transform: translate(-50%, 0);
+        }
+        .slider-dot {
+            padding: 0 5px;
+            height: 20px;
+            border: 2px solid #444;
+            margin: 5px;
+            box-shadow: 0px 0px 6px 1px black;
+            cursor: pointer;
+        }
+        .slider-dot:hover {
+            border: 2px solid #fdd01c;
+        }
+        .hist_list {
+            background-color: rgb(155, 139, 139);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper"></div>
+
+    <script src="./histWindow.js"></script>
+</body>
+
+</html>
