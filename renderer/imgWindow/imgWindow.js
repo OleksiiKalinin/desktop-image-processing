@@ -1,8 +1,10 @@
 const {ipcRenderer} = require('electron')
-const getCurrentWindow = require('electron').remote.getCurrentWindow;
+const remote = require('electron').remote
 const Jimp = require("jimp");
 const div = document.querySelector('div');
 const path = require('path');
+const getCurrentWindow = remote.getCurrentWindow;
+const dirname = remote.getGlobal('appPath');
 
 ipcRenderer.send('image_window_loaded', '');
 
@@ -46,21 +48,21 @@ function line(x1, x2, y1, y2) {
 ipcRenderer.on('url', (_, {imgUrl, imgHeight, imgWidth}) => {
   div.style.width = imgWidth + 'px';
   div.style.height = imgHeight + 'px';
-  
+
   const newUrl = imgUrl.split('\\');
   const name = newUrl[newUrl.length - 1];
 
   const lastDotId = name.split('').lastIndexOf('.');
   const preDotName = name.slice(0, lastDotId);
   const postDotName = name.slice(lastDotId+1);
-  const newPath = __dirname + '\\..\\' + preDotName + '.bmp';
+  const newPath = dirname + '\\' + preDotName + '.bmp';
   const newTiffPath = newPath.split('\\');
 
   Jimp.read(imgUrl, async (err, img) => {
     if (err) {
       console.log(err);
     } else {
-      if (postDotName === ('tif' || 'tiff')) {
+      if (postDotName === 'tif' || postDotName === 'tiff') {
         await img.writeAsync(newPath);
         div.style.background = 'url(' + newTiffPath.join('/') + ') no-repeat center';
       } else {
@@ -106,21 +108,6 @@ ipcRenderer.on('url', (_, {imgUrl, imgHeight, imgWidth}) => {
           ipcRenderer.send('new_plot_data', profileData, getCurrentWindow().id);
         };
       };
-
-      // console.log(img.bitmap.data)
-      // for (let i = 0; i < img.bitmap.data.length; i++) {
-      //   if ((i + 1) % 4 !== 0) {
-      //     if(img.bitmap.data[i] < 100) {
-      //       img.bitmap.data[i] = 0;
-      //     } else if (img.bitmap.data[i] >= 100 && img.bitmap.data[i] < 200){
-      //       img.bitmap.data[i] = 128;
-      //     } else {
-      //       img.bitmap.data[i] = 255;
-      //     }
-      //   }
-      // }
-      // console.log(img.bitmap.data)
-      // // await img.writeAsync('null.bmp')
     }
   });
 });

@@ -11,31 +11,62 @@
       <div class="dropdown">
         <a class="dropbtn">File</a>
         <div class="dropdown-content" id="myDropdown">
-          <a>New</a>
-          <a class="navbar-open">Open</a>
-          <a>Save</a>
+          <div>New</div>
+          <div class="navbar-open">Open</div>
+          <div>Save</div>
         </div>
       </div> 
       <div class="dropdown">
-        <a class="dropbtn">Edit</a>
+        <a class="dropbtn">Process</a>
         <div class="dropdown-content" id="myDropdown">
-          <a>Link 1</a>
-          <a>Link 2</a>
-          <a>Link 3</a>
+          <div class="dropdown">
+            <div>Contrast Enhancement &crarr;</div>
+            <div class="dropdown-content nested" id="myDropdown">
+              <div><p>Normalize</p><div class="hide"><input type="text" placeholder="Enter (Lmax) -> (220)"/><button type="button" class="navbar-normalize">Run</button></div></div>
+              <div class="navbar-equalize">Equalize</div>
+            </div>
+          </div>
+          <div class="dropdown">
+            <div>Operacje punktowe &crarr;</div>
+            <div class="dropdown-content nested" id="myDropdown">
+              <div class="navbar-negacja">Negacja</div>
+              <div><p>Progowanie</p><div class="hide"><input type="text" placeholder="Enter (p) -> (50)"/><button type="button" class="navbar-progowanie">Run</button></div></div>
+              <div><p>Progowanie z zach. poz. szar.</p><div class="hide"><input type="text" placeholder="Enter (p1,p2) -> (50,150)" /><button type="button" class="navbar-progowanie-zps">Run</button></div></div>
+              <div><p>Posteryzacja</p><div class="hide"><input type="text" placeholder="Enter (p) -> (10)"/><button type="button" class="navbar-posterize">Run</button></div></div>
+              <div class="navbar-add">Add</div>
+              <div class="navbar-substract">Substract</div>
+              <div class="navbar-blend">Blend</div>
+              <div class="navbar-AND">AND</div>
+              <div class="navbar-OR">OR</div>
+              <div class="navbar-NOT">NOT</div>
+              <div class="navbar-XOR">XOR</div>
+            </div>
+          </div>
+          <div class="dropdown">
+            <div>Operacje sąsiedztwa &crarr;</div>
+            <div class="dropdown-content nested" id="myDropdown">
+              <div class="navbar-median">Median</div>
+              <div class="navbar-blur">Blur</div>
+              <div class="navbar-gaussianBlur">GaussianBlur</div>
+              <div class="navbar-sobel">Sobel</div>
+              <div class="navbar-laplasian">Laplacian</div>
+              <div class="navbar-canny">Canny</div>
+              <div class="navbar-more-filters">more filters</div>
+            </div>
+          </div>
         </div>
       </div> 
       <div class="dropdown">
         <a class="dropbtn">Analyze</a>
         <div class="dropdown-content" id="myDropdown">
-          <a class="navbar-histogram">Histogram</a>
-          <a class="navbar-plot-profile">Plot profile</a>
-          <a>Link 3</a>
+          <div class="navbar-histogram">Histogram</div>
+          <div class="navbar-plot-profile">Plot profile</div>
         </div>
       </div> 	
       <div class="dropdown">
         <a class="dropbtn">About</a>
         <div class="dropdown-content" id="myDropdown">
-          <a class="navbar-author">Author</a>
+          <div class="navbar-author">Author</div>
         </div>
       </div> 			
 		</div>

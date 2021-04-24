@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Median Filter</title>
+    <style>
+        *, *::before, *::after {
+            margin: 0 10px;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        h4 {
+            margin: 15px 0;
+        }
+
+        input {
+            cursor: pointer;
+        }
+
+        .radio {
+            width: 130px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+        }
+
+        .size, .border {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100px;
+        }
+
+        .border {
+            width: 200px;
+        }
+
+        .long {
+            width: 210px;
+            justify-content: space-around;
+        }
+
+        .submit {
+            font-size: 20px;
+            background-color: rgb(131, 131, 131);
+            width: 40px;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            margin: 10px auto;
+        }
+
+        .submit:hover {
+            background-color: rgb(92, 92, 92);
+        }
+    </style>
+</head>
+<body>
+    <h4>Size</h4>
+    <div class="size">
+        <div>3x3</div>
+        <div>5x5</div>
+        <div>7x7</div>
+    </div>
+    <div class="radio">
+        <input type="radio" name="size" value="0"/>
+        <input type="radio" name="size" value="1"/>
+        <input type="radio" name="size" value="2"/>
+    </div>
+    <h4>Border</h4>
+    <div class="border">
+        <div>Isolated</div>
+        <div>Reflect</div>
+        <div>Replicate</div>
+    </div>
+    <div class="radio long">
+        <input type="radio" name="border" value="0"/>
+        <input type="radio" name="border" value="1"/>
+        <input type="radio" name="border" value="2"/>
+    </div>
+    <br/>
+    <br/>
+    <div class="submit">Run</div>
+
+    <script src="./medianWindow.js"></script>
+</body>
+</html>

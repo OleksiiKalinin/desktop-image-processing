@@ -10,10 +10,10 @@ let colourFrequencies = [];
 
 ipcRenderer.on('image_data', (_, {bitmap, type}) => {
     if (type) {
-        const histred = createHistogram.histogram(createHistogram.colorChannels.Red, bitmap);
-        const histgreen = createHistogram.histogram(createHistogram.colorChannels.Green, bitmap);
-        const histblue = createHistogram.histogram(createHistogram.colorChannels.Blue, bitmap);
-        const histRGB = createHistogram.histogram(createHistogram.colorChannels.Gray, bitmap);
+        const histred = createHistogram.histogram(createHistogram.colorChannels.Red, bitmap.data);
+        const histgreen = createHistogram.histogram(createHistogram.colorChannels.Green, bitmap.data);
+        const histblue = createHistogram.histogram(createHistogram.colorChannels.Blue, bitmap.data);
+        const histRGB = createHistogram.histogram(createHistogram.colorChannels.Gray, bitmap.data);
 
         colourFrequencies.push(histred.colourFrequencies, histgreen.colourFrequencies, histblue.colourFrequencies, histRGB.colourFrequencies)
         
@@ -42,7 +42,7 @@ ipcRenderer.on('image_data', (_, {bitmap, type}) => {
             dotsNames: ['Red', 'Green', 'Blue', 'R+G+B']
         });
     } else {
-        const histgray = createHistogram.histogram(createHistogram.colorChannels.Gray, bitmap);
+        const histgray = createHistogram.histogram(createHistogram.colorChannels.Gray, bitmap.data);
         wrapper.innerHTML = histgray.svgstring;
         wrapper.innerHTML += `
             <div class="slider-dot-wrapper">

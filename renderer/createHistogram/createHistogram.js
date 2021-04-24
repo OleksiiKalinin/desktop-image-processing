@@ -32,11 +32,11 @@ function getColourFrequencies(channel, bitmap)
 	let maxFrequency = 0;
 	const colourFrequencies = Array(256).fill(0);
 
-	for(let i = startIndex; i < bitmap.data.length; i+= 4)
+	for(let i = startIndex; i < bitmap.length; i += 4)
 	{
-		colourFrequencies[bitmap.data[i]]++;
+		colourFrequencies[bitmap[i]]++;
 
-		if(colourFrequencies[bitmap.data[i]] > maxFrequency)
+		if(colourFrequencies[bitmap[i]] > maxFrequency)
 		{
 			maxFrequency++;
 		}
