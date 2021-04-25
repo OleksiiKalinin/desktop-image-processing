@@ -149,6 +149,7 @@ navbarXOR.addEventListener('click', () => ipcRenderer.send('add-twoimg-window', 
 
 file.addEventListener('change', () => {
   const {name, path, type, size} = file.files[0];
+  
   ipcRenderer.send('add-image-window', {name, path, type, size});
   file.value = '';
 });

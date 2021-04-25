@@ -78,6 +78,7 @@ ipcMain.on('add-image-window', (_, fileData) => {
             imageWindow = null;
             const newArr = lastFocusedWindows.filter(item => item !== winId);
             lastFocusedWindows = [...newArr];
+            lastFocusedWindow = lastFocusedWindows[lastFocusedWindows.length - 1];
         });
 
         imageWindow.focus();
@@ -486,10 +487,7 @@ ipcMain.on('navbar-opencv-methods', async (_, method, extra) => {
             break;
         case 'filter2d': 
             let temp = [1, 1, 1, 0, 0, 0, -1, -1, -1,];
-            // cv.imwriteAsync('C:\Users\Admin\Desktop\1.bmp'.split('\\').join('/'), new cv.Mat(3, 3, cv.CV_32FC1, new Buffer.from(temp)));
-            // cv.imwriteAsync('C:\Users\Admin\Desktop\2.bmp'.split('\\').join('/'), cv.Mat.eye(3, 3, cv.CV_32FC1));
-            // console.log(cv.Mat.eye(3, 3, cv.CV_32FC1))
-            dst = src.filter2D(cv.CV_64F, new cv.Mat(3, 3, cv.CV_8UC1, tf.tensor(temp)), anchor, 0, cv.BORDER_REPLICATE)
+            dst = src.filter2D(cv.CV_64F, new cv.Mat(3, 3, cv.CV_32FC1, new Buffer.from(temp)), anchor, 0, cv.BORDER_REPLICATE)
             break;
         case 'median': 
             let size, border;
@@ -546,6 +544,42 @@ ipcMain.on('navbar-opencv-methods', async (_, method, extra) => {
             }
         });
     }).catch(() => createErrorWindow());
+});
+
+ipcMain.on('add-twoimg-window', (_, funcName) => {
+    let twoImgWindow = new BrowserWindow({
+        width: 620,
+        height: 450,
+        autoHideMenuBar: true,
+        title: funcName
+    });
+
+    twoImgWindow.loadURL(url.format({
+        pathname: path.join(__dirname, 'renderer', 'twoImgWindow', 'twoImgWindow.html'),
+        protocol: 'file:',
+        slashes: true
+    }));
+
+    twoImgWindow.focus();
+    
+    twoImgWindow.webContents.on('did-finish-load', () => {
+        twoImgWindow.webContents.send('funcName', funcName);
+    });
+
+    twoImgWindow.on('closed', () => {
+        twoImgWindow = null;
+    });
+
+    twoImgWindow.webContents.openDevTools()
+});
+ipcMain.on('get-new-last-focused-window', (_, winId) => {
+    let url = '';
+
+    windows_data.forEach(win => {
+        if (win.id === lastFocusedWindow) url = win.imgUrl;
+    });
+
+    BrowserWindow.fromId(winId).webContents.send('new-last-focused-window', url);
 });
 
 function createErrorWindow() {

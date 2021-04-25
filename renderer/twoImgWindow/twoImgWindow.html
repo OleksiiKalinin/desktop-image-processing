@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .main {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+        }
+
+        .imgs {
+            display: flex;
+            flex-direction: row;
+            height: 283px;
+        }
+
+        .img {
+            position: relative;
+            width: 50%;
+            height: 100%;
+            background-color: rgb(196, 196, 196);
+            border: 1px solid black;
+        }
+
+        .img button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+
+        .img img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .submit {
+            font-size: 20px;
+            background-color: rgb(131, 131, 131);
+            width: 40px;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            margin: 10px auto;
+        }
+
+        .submit:hover {
+            background-color: rgb(92, 92, 92);
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="imgs">
+            <div class="img">
+                <img/>
+                <button class="btn">Choose image</button>
+            </div>
+            <div class="img">
+                <img/>
+                <button class="btn">Choose image</button>
+            </div>
+        </div>
+        <br>
+        <div class="submit">Run</div>
+    </div>
+    <script src="twoImgWindow.js"></script>
+</body>
+</html>
