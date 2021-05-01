@@ -486,7 +486,7 @@ ipcMain.on('navbar-opencv-methods', async (_, method, extra) => {
             dst = src.canny(100, 200);
             break;
         case 'filter2d': 
-            let temp = [1, 1, 1, 0, 0, 0, -1, -1, -1,];
+            let temp = [[1,1,0],[1,0,-1],[0,-1,-1]];
             dst = src.filter2D(cv.CV_64F, new cv.Mat(3, 3, cv.CV_32FC1, new Buffer.from(temp)), anchor, 0, cv.BORDER_REPLICATE)
             break;
         case 'median': 
