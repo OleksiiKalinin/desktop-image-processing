@@ -12,9 +12,9 @@ const progowaniezps = require('./MyFunctions/progowaniezps.js');
 const progowanie = require('./MyFunctions/progowanie.js');
 var uniqid = require('uniqid');
 const cv = require('opencv4nodejs');
-const tf = require('@tensorflow/tfjs');
+// const tf = require('@tensorflow/tfjs');
 
-require('electron-reload')(__dirname);
+// require('electron-reload')(__dirname);
 
 let mainWindow, imageWindow, histogramWindow, 
     histogramAsListWindow, plotProfileWindow, 
