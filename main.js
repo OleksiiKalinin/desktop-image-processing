@@ -5,11 +5,11 @@ const url = require('url');
 const {app, BrowserWindow, ipcMain} = require('electron');
 const Jimp = require('jimp');
 const createHistogram = require('./renderer/createHistogram/createHistogram.js');
-const normalize = require('./functions/normalize.js');
-const equalize = require('./functions/equalize.js');
-const posterize = require('./functions/posterize.js');
-const progowaniezps = require('./functions/progowaniezps.js');
-const progowanie = require('./functions/progowanie.js');
+const normalize = require('./MyFunctions/normalize.js');
+const equalize = require('./MyFunctions/equalize.js');
+const posterize = require('./MyFunctions/posterize.js');
+const progowaniezps = require('./MyFunctions/progowaniezps.js');
+const progowanie = require('./MyFunctions/progowanie.js');
 var uniqid = require('uniqid');
 const cv = require('opencv4nodejs');
 const tf = require('@tensorflow/tfjs');
@@ -256,7 +256,7 @@ ipcMain.on('add_hist_as_list_window', (_, array, idOfImageWindow) => {
 
     histogramAsListWindow.focus();
 
-    // histogramAsListWindow.webContents.openDevTools()
+    histogramAsListWindow.webContents.openDevTools()
 });
 
 ipcMain.on('hist_as_list_window_loaded', (_, id) => {
@@ -463,11 +463,10 @@ ipcMain.on('navbar-opencv-methods', async (_, method, extra) => {
         }
     });
 
-    let src = cv.imread(url.split('\\').join('/'));
+    let src = cv.imread(url.split('\\').join('/')).cvtColor(cv.COLOR_RGB2GRAY);
     let dst = new cv.Mat();
     let ksize = new cv.Size(3, 3);
     let anchor = new cv.Point(-1, -1);
-    src = src.cvtColor(cv.COLOR_RGB2GRAY);
 
     switch (method) {
         case 'blur': 
@@ -486,8 +485,8 @@ ipcMain.on('navbar-opencv-methods', async (_, method, extra) => {
             dst = src.canny(100, 200);
             break;
         case 'filter2d': 
-            let temp = [[1,1,0],[1,0,-1],[0,-1,-1]];
-            dst = src.filter2D(cv.CV_64F, new cv.Mat(3, 3, cv.CV_32FC1, new Buffer.from(temp)), anchor, 0, cv.BORDER_REPLICATE)
+            // let temp = [[1,1,0],[1,0,-1],[0,-1,-1]];
+            // dst = src.filter2D(cv.CV_64F, new cv.Mat(3, 3, cv.CV_32FC1, new Buffer.from(temp)), anchor, 0, cv.BORDER_REPLICATE)
             break;
         case 'median': 
             let size, border;
@@ -517,7 +516,7 @@ ipcMain.on('navbar-opencv-methods', async (_, method, extra) => {
                     break;
                 default: break;
             }
-
+            
             dst = src.copyMakeBorder(1, 1, 1, 1, border).medianBlur(size);
             break;
         default: break;
@@ -572,6 +571,7 @@ ipcMain.on('add-twoimg-window', (_, funcName) => {
 
     twoImgWindow.webContents.openDevTools()
 });
+
 ipcMain.on('get-new-last-focused-window', (_, winId) => {
     let url = '';
 
@@ -580,6 +580,33 @@ ipcMain.on('get-new-last-focused-window', (_, winId) => {
     });
 
     BrowserWindow.fromId(winId).webContents.send('new-last-focused-window', url);
+});
+
+ipcMain.on('add-histogram2d-window', (_, histogram2d) => {
+    let histogram2dWindow = new BrowserWindow({
+        width: 700,
+        height: 750,
+        autoHideMenuBar: true,
+        title: 'Histogram 2D'
+    });
+
+    histogram2dWindow.loadURL(url.format({
+        pathname: path.join(__dirname, 'renderer', 'histogram2dWindow', 'histogram2dWindow.html'),
+        protocol: 'file:',
+        slashes: true
+    }));
+
+    histogram2dWindow.focus();
+    
+    histogram2dWindow.webContents.on('did-finish-load', () => {
+        histogram2dWindow.webContents.send('histogram2d', histogram2d);
+    });
+
+    histogram2dWindow.on('closed', () => {
+        histogram2dWindow = null;
+    });
+
+    histogram2dWindow.webContents.openDevTools()
 });
 
 function createErrorWindow() {

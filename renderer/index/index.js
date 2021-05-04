@@ -4,6 +4,7 @@ const menuItem = document.querySelectorAll('.dropdown');
 const nestedItems = document.querySelectorAll('.nested');
 const navbarOpen = document.querySelector('.navbar-open');
 const navbarHistogram = document.querySelector('.navbar-histogram');
+const navbarHistogram2d = document.querySelector('.navbar-histogram2d');
 const navbarPlotProfile = document.querySelector('.navbar-plot-profile');
 const navbarAuthor = document.querySelector('.navbar-author');
 const navbarNormalize = document.querySelector('.navbar-normalize');
@@ -145,6 +146,7 @@ navbarAND.addEventListener('click', () => ipcRenderer.send('add-twoimg-window', 
 navbarOR.addEventListener('click', () => ipcRenderer.send('add-twoimg-window', 'OR'));
 navbarNOT.addEventListener('click', () => ipcRenderer.send('add-twoimg-window', 'NOT'));
 navbarXOR.addEventListener('click', () => ipcRenderer.send('add-twoimg-window', 'XOR'));
+navbarHistogram2d.addEventListener('click', () => ipcRenderer.send('add-twoimg-window', 'Histogram 2D'));
 
 
 file.addEventListener('change', () => {

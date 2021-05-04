@@ -5,6 +5,7 @@ const getCurrentWindow = require('electron').remote.getCurrentWindow;
 const cv = require('opencv4nodejs');
 const dirname = require('electron').remote.getGlobal('appPath');
 var uniqid = require('uniqid');
+const histogram2d = require('../../MyFunctions/histogram2d.js');
 let images = [];
 
 ipcRenderer.on('funcName', (_, funcName) => {
@@ -47,9 +48,15 @@ ipcRenderer.on('funcName', (_, funcName) => {
             case 'XOR':
                 dst = img1.bitwiseXor(img2);
                 break;
+            case 'Histogram 2D':
+                img1Data = img1.cvtColor(cv.COLOR_RGBA2GRAY).getDataAsArray();
+                img2Data = img2.cvtColor(cv.COLOR_RGBA2GRAY).getDataAsArray();
+                hist2d = histogram2d(img1Data, img2Data);
+                ipcRenderer.send('add-histogram2d-window', hist2d);
+                return;
             default: break;
         }
-
+        
         const lastIndex = images[0].lastIndexOf('.');
         const imgType = images[0].slice(lastIndex+1);
         const newUrl = `${dirname}\\${uniqid()}.${imgType}`;
