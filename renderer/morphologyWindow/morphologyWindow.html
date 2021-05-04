@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morphology</title>
+    <style>
+        *, *::before, *::after {
+            margin: 0 10px;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        h4 {
+            margin: 15px 0;
+        }
+
+        input {
+            cursor: pointer;
+        }
+
+        .flex {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .flex > div {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .flex > div span {
+            margin-bottom: 5px;
+        }
+
+        #size {
+            margin-left: 30px;
+        }
+
+        .submit {
+            font-size: 20px;
+            background-color: rgb(131, 131, 131);
+            width: 40px;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            margin: 10px auto;
+        }
+
+        .submit:hover {
+            background-color: rgb(92, 92, 92);
+        }
+    </style>
+</head>
+<body>
+    <h4>Operation</h4>
+    <div class="flex">
+        <div>
+            <span>Erode</span>
+            <input type="radio" name="operation" value="0" checked/>
+        </div>
+        <div>
+            <span>Dilate</span>
+            <input type="radio" name="operation" value="1"/>
+        </div>
+        <div>
+            <span>Open</span>
+            <input type="radio" name="operation" value="2"/>
+        </div>
+        <div>
+            <span>Close</span>
+            <input type="radio" name="operation" value="3"/>
+        </div>
+    </div>
+    <h4>Element Shape</h4>
+    <div class="flex">
+        <div>
+            <span>Rectangle</span>
+            <input type="radio" name="shape" value="0" checked/>
+        </div>
+        <div>
+            <span>Ellipse</span>
+            <input type="radio" name="shape" value="1"/>
+        </div>
+        <div>
+            <span>Cross</span>
+            <input type="radio" name="shape" value="2"/>
+        </div>
+    </div>
+    <h4>Element Size</h4>
+    <select id="size">
+        <option value="3" selected>3</option>
+        <option value="5">5</option>
+        <option value="7">7</option>
+        <option value="9">9</option>
+        <option value="11">11</option>
+        <option value="13">13</option>
+        <option value="15">15</option>
+        <option value="17">17</option>
+        <option value="19">19</option>
+        <option value="21">21</option>
+    </select>
+    <h4>Border</h4>
+    <div class="flex">
+        <div>
+            <span>Isolated</span>
+            <input type="radio" name="border" value="0" checked/>
+        </div>
+        <div>
+            <span>Reflect</span>
+            <input type="radio" name="border" value="1"/>
+        </div>
+        <div>
+            <span>Reflect101</span>
+            <input type="radio" name="border" value="2"/>
+        </div>
+        <div>
+            <span>Replicate</span>
+            <input type="radio" name="border" value="3"/>
+        </div>
+        <div>
+            <span>Constant</span>
+            <input type="radio" name="border" value="4"/>
+        </div>
+    </div>
+    <br/>
+    <br/>
+    <div class="submit">Run</div>
+
+    <script src="./morphologyWindow.js"></script>
+</body>
+</html>

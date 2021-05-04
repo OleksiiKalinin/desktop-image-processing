@@ -14,11 +14,11 @@ var uniqid = require('uniqid');
 const cv = require('opencv4nodejs');
 // const tf = require('@tensorflow/tfjs');
 
-// require('electron-reload')(__dirname);
+try{ require('electron-reload')(__dirname)} catch{}
 
 let mainWindow, imageWindow, histogramWindow, 
     histogramAsListWindow, plotProfileWindow, 
-    moreFiltersWindow, medianWindow,
+    moreFiltersWindow, medianWindow, morphologyWindow,
     lastFocusedWindow, lastFocusedWindows = [],
     windows_data = [], whoOpenedHistogram = [],
     histogramAsList, whoOpenedHistogramAsList = [],
@@ -37,7 +37,7 @@ const createMainWindow = () => {
         slashes: true
     }));
 
-    mainWindow.webContents.openDevTools()
+    // mainWindow.webContents.openDevTools()
 
     mainWindow.on('closed', () => {
         app.quit();
@@ -92,7 +92,7 @@ ipcMain.on('add-image-window', (_, fileData) => {
             imgHeight,
             imgWidth
         });
-        imageWindow.webContents.openDevTools()
+        // imageWindow.webContents.openDevTools()
     });
 });
 
@@ -256,7 +256,7 @@ ipcMain.on('add_hist_as_list_window', (_, array, idOfImageWindow) => {
 
     histogramAsListWindow.focus();
 
-    histogramAsListWindow.webContents.openDevTools()
+    // histogramAsListWindow.webContents.openDevTools()
 });
 
 ipcMain.on('hist_as_list_window_loaded', (_, id) => {
@@ -350,17 +350,17 @@ ipcMain.on('add-more-filters-window', () => {
             moreFiltersWindow = null;
         });
 
-        moreFiltersWindow.webContents.openDevTools()
+        // moreFiltersWindow.webContents.openDevTools()
     } else {moreFiltersWindow.focus()}
 });
 
 ipcMain.on('add-median-window', () => {
     if (!medianWindow) {
         medianWindow = new BrowserWindow({
-            width: 300,
+            width: 320,
             height: 280,
             autoHideMenuBar: true,
-            // resizable: false,
+            resizable: false,
             //parent: mainWindow
         });
 
@@ -378,6 +378,32 @@ ipcMain.on('add-median-window', () => {
 
         // medianWindow.webContents.openDevTools()
     } else {medianWindow.focus()}
+});
+
+ipcMain.on('add-morphology-window', () => {
+    if (!morphologyWindow) {
+        morphologyWindow = new BrowserWindow({
+            width: 560,
+            height: 450,
+            autoHideMenuBar: true,
+            // resizable: false,
+            //parent: mainWindow
+        });
+
+        morphologyWindow.loadURL(url.format({
+            pathname: path.join(__dirname, 'renderer', 'morphologyWindow', 'morphologyWindow.html'),
+            protocol: 'file:',
+            slashes: true
+        }));
+
+        morphologyWindow.focus();
+        
+        morphologyWindow.on('closed', () => {
+            morphologyWindow = null;
+        });
+
+        // morphologyWindow.webContents.openDevTools()
+    } else {morphologyWindow.focus()}
 });
 
 ipcMain.on('plot_profile_window_loaded', () => {
@@ -489,35 +515,64 @@ ipcMain.on('navbar-opencv-methods', async (_, method, extra) => {
             // dst = src.filter2D(cv.CV_64F, new cv.Mat(3, 3, cv.CV_32FC1, new Buffer.from(temp)), anchor, 0, cv.BORDER_REPLICATE)
             break;
         case 'median': 
-            let size, border;
+            {
+                let size, border;
 
-            switch(extra.size){
-                case 0: 
+                if (extra.size === 0){
                     size = 3;
-                    break;
-                case 1: 
+                } else  if (extra.size === 1){
                     size = 5;
-                    break;
-                case 2: 
+                } else if (extra.size === 2){
                     size = 7;
-                    break;
-                default: break;
-            }
-            
-            switch(extra.border){
-                case 0: 
+                }
+
+                if (extra.border === 0){
                     border = cv.BORDER_ISOLATED;
-                    break;
-                case 1: 
+                } else  if (extra.border === 1){
                     border = cv.BORDER_REFLECT;
-                    break;
-                case 2: 
+                } else if (extra.border === 2){
                     border = cv.BORDER_REPLICATE;
-                    break;
-                default: break;
+                }
+                
+                dst = src.copyMakeBorder(1, 1, 1, 1, border).medianBlur(size);
             }
-            
-            dst = src.copyMakeBorder(1, 1, 1, 1, border).medianBlur(size);
+            break;
+        case 'morphology':
+            {
+                let border, operation, shape;
+
+                if (extra.operation === 0){
+                    operation = cv.MORPH_ERODE;
+                } else  if (extra.operation === 1){
+                    operation = cv.MORPH_DILATE;
+                } else if (extra.operation === 2){
+                    operation = cv.MORPH_OPEN;
+                } else if (extra.operation === 3){
+                    operation = cv.MORPH_CLOSE;
+                }
+
+                if (extra.shape === 0){
+                    shape = cv.MORPH_RECT;
+                } else  if (extra.shape === 1){
+                    shape = cv.MORPH_ELLIPSE;
+                } else if (extra.shape === 2){
+                    shape = cv.MORPH_CROSS;
+                }
+
+                if (extra.border === 0){
+                    border = cv.BORDER_ISOLATED;
+                } else  if (extra.border === 1){
+                    border = cv.BORDER_REFLECT;
+                } else if (extra.border === 2){
+                    border = cv.BORDER_REFLECT_101;
+                } else if (extra.border === 3){
+                    border = cv.BORDER_REPLICATE;
+                } else if (extra.border === 4){
+                    border = cv.BORDER_CONSTANT;
+                }
+
+                dst = src.morphologyEx(cv.getStructuringElement(shape, new cv.Size(extra.size, extra.size)), operation, new cv.Point(-1, -1), 1, border);
+            }
             break;
         default: break;
     }
@@ -548,7 +603,7 @@ ipcMain.on('navbar-opencv-methods', async (_, method, extra) => {
 ipcMain.on('add-twoimg-window', (_, funcName) => {
     let twoImgWindow = new BrowserWindow({
         width: 620,
-        height: 450,
+        height: 420,
         autoHideMenuBar: true,
         title: funcName
     });
@@ -569,7 +624,7 @@ ipcMain.on('add-twoimg-window', (_, funcName) => {
         twoImgWindow = null;
     });
 
-    twoImgWindow.webContents.openDevTools()
+    // twoImgWindow.webContents.openDevTools()
 });
 
 ipcMain.on('get-new-last-focused-window', (_, winId) => {
@@ -606,7 +661,7 @@ ipcMain.on('add-histogram2d-window', (_, histogram2d) => {
         histogram2dWindow = null;
     });
 
-    histogram2dWindow.webContents.openDevTools()
+    // histogram2dWindow.webContents.openDevTools()
 });
 
 function createErrorWindow() {

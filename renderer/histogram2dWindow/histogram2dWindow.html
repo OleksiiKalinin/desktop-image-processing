@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,16 +11,71 @@
             padding: 0;
             box-sizing: border-box;
         }
-        TABLE {
-            margin: 0 auto;
-            border-collapse: collapse;
-            border: 4px solid #000;
+
+        table {
+            font-size: 125%;
+            white-space: nowrap;
+            border: none;
+            border-collapse: separate;
+            border-spacing: 0;
+            table-layout: fixed;
+            border: 1px solid black;
+            cursor: crosshair;
         }
-        TD, TH {
-            padding: 5px;
-            border: 2px solid rgb(0, 0, 0);
+
+        td, th {
+            border: 1px solid black;
+            padding: 0.5rem 1rem;
+        }
+
+        th[index="head"] {
+            padding: 3px;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background: white;
+        }
+
+        td {
+            background: #fff;
+            padding: 4px 5px;
             text-align: center;
         }
+
+        th[index="body"] {
+            position: relative;
+            font-weight: 900;
+        }
+
+        th[index="head"]:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 2;
+        }
+
+        th[index="body"] {
+            position: sticky;
+            left: 0;
+            background: white;
+            z-index: 1;
+        }
+
+        td:hover {
+            background-color: #ffa;
+        }
+
+        /* td:hover::after,
+        th:hover::after {
+            content: "";
+            position: absolute;
+            background-color: #ffa;
+            left: 0;
+            top: -5000px;
+            height: 10000px;
+            width: 100%;
+            z-index: -1;
+        } */
+
         p {
             position: absolute;
             top: 50%;
@@ -29,9 +85,11 @@
         }
     </style>
 </head>
+
 <body>
     <p>Loading...</p>
     <table class="table"></table>
     <script src="histogram2dWindow.js"></script>
 </body>
+
 </html>

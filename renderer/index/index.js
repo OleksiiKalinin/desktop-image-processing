@@ -18,6 +18,7 @@ const navbarGaussianBlur = document.querySelector('.navbar-gaussianBlur');
 const navbarSobel = document.querySelector('.navbar-sobel');
 const navbarLaplasian = document.querySelector('.navbar-laplasian');
 const navbarCanny = document.querySelector('.navbar-canny');
+const navbarMorphology = document.querySelector('.navbar-morphology');
 const navbarMoreFilters = document.querySelector('.navbar-more-filters');
 const navbarMedian = document.querySelector('.navbar-median');
 
@@ -92,6 +93,7 @@ navbarSobel.addEventListener('click', () => ipcRenderer.send('navbar-opencv-meth
 navbarLaplasian.addEventListener('click', () => ipcRenderer.send('navbar-opencv-methods', 'laplacian'));
 navbarCanny.addEventListener('click', () => ipcRenderer.send('navbar-opencv-methods', 'canny'));
 navbarMoreFilters.addEventListener('click', () => ipcRenderer.send('add-more-filters-window', ''));
+navbarMorphology.addEventListener('click', () => ipcRenderer.send('add-morphology-window', ''));
 navbarMedian.addEventListener('click', () => ipcRenderer.send('add-median-window', ''));
 navbarPlotProfile.addEventListener('click', () => ipcRenderer.send('add-plot-profile-window', ''));
 

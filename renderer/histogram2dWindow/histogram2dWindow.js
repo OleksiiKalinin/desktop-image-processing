@@ -4,15 +4,15 @@ ipcRenderer.on('histogram2d', (_, histogram2d) => {
     const wrapper = document.querySelector('.table');
 
     let tr = document.createElement('tr');
-    tr.innerHTML += `<th></th>`;
+    tr.innerHTML += `<th index="head"></th>`;
 
-    for (let i = 0; i < 256; ++i) tr.innerHTML += `<th>${i}</th>`;
+    for (let i = 0; i < 256; ++i) tr.innerHTML += `<th index="head">${i}</th>`;
 
     wrapper.appendChild(tr)
 
     histogram2d.forEach((row, i) => {
         let tr = document.createElement('tr');
-        tr.innerHTML += `<td style="font-weight: 900;">${i}</td>`;
+        tr.innerHTML += `<th index="body">${i}</th>`;
 
         row.forEach(col => {
             tr.innerHTML += `<td>${col}</td>`;
