@@ -334,7 +334,7 @@ ipcMain.on('add-more-filters-window', () => {
             width: 620,
             height: 630,
             autoHideMenuBar: true,
-            // resizable: false,
+            resizable: false,
             //parent: mainWindow
         });
 
@@ -386,7 +386,7 @@ ipcMain.on('add-morphology-window', () => {
             width: 560,
             height: 450,
             autoHideMenuBar: true,
-            // resizable: false,
+            resizable: false,
             //parent: mainWindow
         });
 
@@ -492,11 +492,10 @@ ipcMain.on('navbar-opencv-methods', async (_, method, extra) => {
     let src = cv.imread(url.split('\\').join('/')).cvtColor(cv.COLOR_RGB2GRAY);
     let dst = new cv.Mat();
     let ksize = new cv.Size(3, 3);
-    let anchor = new cv.Point(-1, -1);
 
     switch (method) {
         case 'blur': 
-            dst = src.blur(ksize, anchor, cv.BORDER_DEFAULT);
+            dst = src.blur(ksize, new cv.Point(-1, -1), cv.BORDER_DEFAULT);
             break;
         case 'gaussianBlur': 
             dst = src.gaussianBlur(ksize, 0, 0, cv.BORDER_DEFAULT);
@@ -539,7 +538,7 @@ ipcMain.on('navbar-opencv-methods', async (_, method, extra) => {
             break;
         case 'morphology':
             {
-                let border, operation, shape;
+                let border, operation, shape, isSkeleton = false;
 
                 if (extra.operation === 0){
                     operation = cv.MORPH_ERODE;
@@ -549,6 +548,8 @@ ipcMain.on('navbar-opencv-methods', async (_, method, extra) => {
                     operation = cv.MORPH_OPEN;
                 } else if (extra.operation === 3){
                     operation = cv.MORPH_CLOSE;
+                } else if (extra.operation === 4){
+                    isSkeleton = true;
                 }
 
                 if (extra.shape === 0){
@@ -571,7 +572,25 @@ ipcMain.on('navbar-opencv-methods', async (_, method, extra) => {
                     border = cv.BORDER_CONSTANT;
                 }
 
-                dst = src.morphologyEx(cv.getStructuringElement(shape, new cv.Size(extra.size, extra.size)), operation, new cv.Point(-1, -1), 1, border);
+                if (!isSkeleton)
+                    dst = src.morphologyEx(cv.getStructuringElement(shape, new cv.Size(extra.size, extra.size)), operation, new cv.Point(-1, -1), 1, border);
+                else {
+                    let skeleton = new cv.Mat(src.rows, src.cols, cv.CV_8UC1, 0);
+                    let srcCopy = src.threshold(127, 255, cv.THRESH_BINARY).copy();
+                    let element = cv.getStructuringElement(shape, new cv.Size(extra.size, extra.size));
+                    
+                    while (true) {
+                        let srcOpen = srcCopy.morphologyEx(element, cv.MORPH_OPEN, new cv.Point(-1, -1), 1, border);
+                        let srcTemp = srcCopy.sub(srcOpen);
+                        let srcEroded = srcCopy.erode(element, new cv.Point(-1, -1), 1, border);
+                        skeleton = skeleton.bitwiseOr(srcTemp);
+                        srcCopy = srcEroded.copy();
+
+                        if (srcCopy.countNonZero() === 0) break;
+                    }
+                    
+                    dst = skeleton;
+                }
             }
             break;
         default: break;
@@ -605,6 +624,7 @@ ipcMain.on('add-twoimg-window', (_, funcName) => {
         width: 620,
         height: 420,
         autoHideMenuBar: true,
+        resizable: false,
         title: funcName
     });
 

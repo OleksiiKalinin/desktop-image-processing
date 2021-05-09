@@ -15,17 +15,18 @@
         table {
             font-size: 125%;
             white-space: nowrap;
-            border: none;
             border-collapse: separate;
             border-spacing: 0;
             table-layout: fixed;
-            border: 1px solid black;
+            border: 1.5px solid black;
             cursor: crosshair;
         }
 
-        td, th {
+        th {
             border: 1px solid black;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem;
+            font-weight: bolder;
+            font-size: 21px;
         }
 
         th[index="head"] {
@@ -38,19 +39,17 @@
 
         td {
             background: #fff;
-            padding: 4px 5px;
             text-align: center;
-        }
-
-        th[index="body"] {
-            position: relative;
-            font-weight: 900;
+            border: .2px solid black;
+            padding: 0.5rem;
         }
 
         th[index="head"]:first-child {
             position: sticky;
             left: 0;
             z-index: 2;
+            padding: 0;
+            height: 100%;
         }
 
         th[index="body"] {
@@ -64,17 +63,28 @@
             background-color: #ffa;
         }
 
-        /* td:hover::after,
-        th:hover::after {
-            content: "";
+        .table table {
+            border: none;
+            border-collapse: collapse;
+            width: 50px;
+        }
+
+        .table table th, .table table td {
+            border: none;
+            font-weight: bolder;
+            font-size: 11px;
+            padding: 0;
+        }
+
+        .line {
             position: absolute;
-            background-color: #ffa;
-            left: 0;
-            top: -5000px;
-            height: 10000px;
-            width: 100%;
-            z-index: -1;
-        } */
+            background-color: black;
+            height: 1px;
+            width: 115px;
+            top: 0;
+            left: -115%;
+            transform: rotate(31.5deg);
+        }
 
         p {
             position: absolute;
@@ -89,7 +99,7 @@
 <body>
     <p>Loading...</p>
     <table class="table"></table>
-    <script src="histogram2dWindow.js"></script>
+    <script src="histogram2dWindow.js" defer></script>
 </body>
 
 </html>
