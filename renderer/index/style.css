@@ -108,3 +108,31 @@ button {
 .nested {
   left: 100px;
 }
+
+.about-info {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  z-index: 1000;
+  border: 1px solid black;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #fff;
+}
+
+.about-info__close {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  transform: translateX(-140%);
+  cursor: pointer;
+}
+
+.show {
+  display: flex;
+}

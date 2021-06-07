@@ -21,6 +21,8 @@ const navbarCanny = document.querySelector('.navbar-canny');
 const navbarMorphology = document.querySelector('.navbar-morphology');
 const navbarMoreFilters = document.querySelector('.navbar-more-filters');
 const navbarMedian = document.querySelector('.navbar-median');
+const navbarSegmentation = document.querySelector('.navbar-segmentation');
+const navbarAnalyzeObjects = document.querySelector('.navbar-analyze-objects');
 
 const navbarAdd = document.querySelector('.navbar-add');
 const navbarSub = document.querySelector('.navbar-substract');
@@ -29,15 +31,6 @@ const navbarAND = document.querySelector('.navbar-AND');
 const navbarOR = document.querySelector('.navbar-OR');
 const navbarNOT = document.querySelector('.navbar-NOT');
 const navbarXOR = document.querySelector('.navbar-XOR');
-
-// const cv = require('opencv4nodejs')
-// let temp = [-9]
-// let matFromArray = Buffer.from(temp)
-// let matFromArray = new cv.Mat(3, 3, cv.CV_8U, temp)
-// console.log(matFromArray.getData())
-// console.log(cv.Mat.eye(3, 3, cv.CV_8U).getData())
-// cv.medianBlur
-// console.log(matFromArray.getDataAsArray())
 
 {
   let isTaskbar = false
@@ -96,6 +89,7 @@ navbarMoreFilters.addEventListener('click', () => ipcRenderer.send('add-more-fil
 navbarMorphology.addEventListener('click', () => ipcRenderer.send('add-morphology-window', ''));
 navbarMedian.addEventListener('click', () => ipcRenderer.send('add-median-window', ''));
 navbarPlotProfile.addEventListener('click', () => ipcRenderer.send('add-plot-profile-window', ''));
+navbarSegmentation.addEventListener('click', () => ipcRenderer.send('add-segmentation-window', ''));
 
 navbarEqualize.addEventListener('click', () => ipcRenderer.send('navbar-own-methods', 'equalize'));
 navbarNegacja.addEventListener('click', () => ipcRenderer.send('navbar-own-methods', 'negacja'));
@@ -150,6 +144,13 @@ navbarNOT.addEventListener('click', () => ipcRenderer.send('add-twoimg-window', 
 navbarXOR.addEventListener('click', () => ipcRenderer.send('add-twoimg-window', 'XOR'));
 navbarHistogram2d.addEventListener('click', () => ipcRenderer.send('add-twoimg-window', 'Histogram 2D'));
 
+navbarAuthor.addEventListener('click', () => {
+  const div = document.querySelector('.about-info');
+  div.classList.toggle('show');
+  document.querySelector('.about-info__close').addEventListener('click', () => {
+    div.classList.toggle('show');
+  });
+});
 
 file.addEventListener('change', () => {
   const {name, path, type, size} = file.files[0];

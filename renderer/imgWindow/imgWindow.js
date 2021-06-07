@@ -2,7 +2,6 @@ const {ipcRenderer} = require('electron')
 const remote = require('electron').remote
 const Jimp = require("jimp");
 const div = document.querySelector('div');
-const path = require('path');
 const getCurrentWindow = remote.getCurrentWindow;
 const dirname = remote.getGlobal('appPath');
 

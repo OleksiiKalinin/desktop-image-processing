@@ -8,9 +8,7 @@ const submit = document.querySelector('.submit');
 submit.addEventListener('click', () => {
     let size = null, border = null, operation = null, shape = null;
 
-    for (let option in selectSize.children) {
-        if (selectSize.children[option].selected) size = +selectSize.children[option].value;
-    }
+    size = +selectSize.value;
         
     radioBorder.forEach(radio => {
         if (radio.checked) border = +radio.value;

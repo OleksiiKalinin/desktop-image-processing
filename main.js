@@ -12,13 +12,13 @@ const progowaniezps = require('./MyFunctions/progowaniezps.js');
 const progowanie = require('./MyFunctions/progowanie.js');
 var uniqid = require('uniqid');
 const cv = require('opencv4nodejs');
-// const tf = require('@tensorflow/tfjs');
+const watershed = require('./MyFunctions/watershed.js');
 
 try{ require('electron-reload')(__dirname)} catch{}
 
 let mainWindow, imageWindow, histogramWindow, 
     histogramAsListWindow, plotProfileWindow, 
-    moreFiltersWindow, medianWindow, morphologyWindow,
+    moreFiltersWindow, medianWindow, morphologyWindow, segmentationWindow,
     lastFocusedWindow, lastFocusedWindows = [],
     windows_data = [], whoOpenedHistogram = [],
     histogramAsList, whoOpenedHistogramAsList = [],
@@ -58,8 +58,8 @@ ipcMain.on('add-image-window', (_, fileData) => {
         const imgSize = fileData.size;
         
         imageWindow = new BrowserWindow({
-            width: imgWidth + 6,
-            height: imgHeight + 7 + 22,
+            width: imgWidth + 16,
+            height: imgHeight + 17 + 22,
             autoHideMenuBar: true,
             // resizable: false,
             //parent: mainWindow,
@@ -480,6 +480,7 @@ ipcMain.on('navbar-own-methods', (_, method, extra) => {
 
 ipcMain.on('navbar-opencv-methods', async (_, method, extra) => {
     let url = '', id = '';
+    let flag = true;
 
     windows_data.forEach(win => {
         if (win.id === lastFocusedWindow) {
@@ -489,6 +490,10 @@ ipcMain.on('navbar-opencv-methods', async (_, method, extra) => {
         }
     });
 
+    if (!url) {
+        createErrorWindow();
+        return;
+    }
     let src = cv.imread(url.split('\\').join('/')).cvtColor(cv.COLOR_RGB2GRAY);
     let dst = new cv.Mat();
     let ksize = new cv.Size(3, 3);
@@ -593,30 +598,79 @@ ipcMain.on('navbar-opencv-methods', async (_, method, extra) => {
                 }
             }
             break;
+        case 'segmentation': {
+            flag = false;
+
+            const lastIndex = url.lastIndexOf('.');
+            const imgType = url.slice(lastIndex+1);
+            const imgWidth = src.cols;
+            const imgHeight = src.rows;
+            const newUrl = `${global.appPath}\\${uniqid()}.${imgType}`;
+            const objIndex = windows_data.findIndex((obj => obj.id === id));
+            let dst = new cv.Mat();
+            
+            if (extra.reset) {
+                BrowserWindow.fromId(id).webContents.send('url', {imgUrl: url, imgHeight, imgWidth});
+                break;
+            }
+            if (extra.submit) {
+                Jimp.read(windows_data[objIndex].tempNewImage, (err, img) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        windows_data[objIndex].imgUrl = windows_data[objIndex].tempNewImage;
+                        windows_data[objIndex].imgData.data = [...img.bitmap.data];
+                        
+                        addHistogramWindow(true);
+                        BrowserWindow.fromId(id).webContents.send('url', {imgUrl: newUrl, imgHeight, imgWidth});
+                    }
+                });
+                break;
+            }
+
+            if (extra.method === 0) {
+                dst = src.threshold(extra.thresh, 255, cv.THRESH_BINARY);
+            } else if (extra.method === 1) {
+                dst = src.adaptiveThreshold(255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, extra.thresh, 5);
+            } else if (extra.method === 2) {
+                dst = src.gaussianBlur(ksize, 0, 0, cv.BORDER_DEFAULT).threshold(0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU);
+            } else if (extra.method === 3) {
+                dst = watershed(url);
+            }
+
+            cv.imwriteAsync(newUrl.split('\\').join('/'), dst)
+            .then(() => {
+                windows_data[objIndex].tempNewImage = newUrl;
+                BrowserWindow.fromId(id).webContents.send('url', {imgUrl: newUrl, imgHeight, imgWidth});
+            })
+            .catch(() => createErrorWindow());
+        }
         default: break;
     }
+    
+    if (flag) {
+        const lastIndex = url.lastIndexOf('.');
+        const imgType = url.slice(lastIndex+1);
+        const imgWidth = src.cols;
+        const imgHeight = src.rows;
+        const newUrl = `${global.appPath}\\${uniqid()}.${imgType}`;
+        const objIndex = windows_data.findIndex((obj => obj.id === id));
 
-    const lastIndex = url.lastIndexOf('.');
-    const imgType = url.slice(lastIndex+1);
-    const imgWidth = src.rows;
-    const imgHeight = src.cols;
-    const newUrl = `${global.appPath}\\${uniqid()}.${imgType}`;
-    const objIndex = windows_data.findIndex((obj => obj.id === id));
-
-    cv.imwriteAsync(newUrl.split('\\').join('/'), dst)
-    .then(() => {
-        Jimp.read(newUrl, async (err, img) => {
-            if (err) {
-              console.log(err);
-            } else {
-                windows_data[objIndex].imgUrl = newUrl;
-                windows_data[objIndex].imgData.data = [...img.bitmap.data];
-                
-                addHistogramWindow(true);
-                BrowserWindow.fromId(id).webContents.send('url', {imgUrl: newUrl, imgHeight, imgWidth});
-            }
-        });
-    }).catch(() => createErrorWindow());
+        cv.imwriteAsync(newUrl.split('\\').join('/'), dst)
+        .then(() => {
+            Jimp.read(newUrl, (err, img) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    windows_data[objIndex].imgUrl = newUrl;
+                    windows_data[objIndex].imgData.data = [...img.bitmap.data];
+                    
+                    addHistogramWindow(true);
+                    BrowserWindow.fromId(id).webContents.send('url', {imgUrl: newUrl, imgHeight, imgWidth});
+                }
+            });
+        }).catch(() => createErrorWindow());
+    }
 });
 
 ipcMain.on('add-twoimg-window', (_, funcName) => {
@@ -682,6 +736,33 @@ ipcMain.on('add-histogram2d-window', (_, histogram2d) => {
     });
 
     // histogram2dWindow.webContents.openDevTools()
+});
+
+ipcMain.on('add-segmentation-window', () => {
+    if (!segmentationWindow){
+        segmentationWindow = new BrowserWindow({
+            width: 305,
+            height: 325,
+            autoHideMenuBar: true,
+            resizable: false,
+            title: 'Segmentation'
+        });
+
+        segmentationWindow.loadURL(url.format({
+            pathname: path.join(__dirname, 'renderer', 'segmentationWindow', 'segmentationWindow.html'),
+            protocol: 'file:',
+            slashes: true
+        }));
+
+
+        segmentationWindow.on('closed', () => {
+            segmentationWindow = null;
+        });
+    } else {
+        segmentationWindow.focus();
+    }
+
+    // segmentationWindow.webContents.openDevTools()
 });
 
 function createErrorWindow() {
