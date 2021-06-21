@@ -3,6 +3,7 @@ const file = document.querySelector('#file');
 const menuItem = document.querySelectorAll('.dropdown');
 const nestedItems = document.querySelectorAll('.nested');
 const navbarOpen = document.querySelector('.navbar-open');
+const navbarSave = document.querySelector('.navbar-save');
 const navbarHistogram = document.querySelector('.navbar-histogram');
 const navbarHistogram2d = document.querySelector('.navbar-histogram2d');
 const navbarPlotProfile = document.querySelector('.navbar-plot-profile');
@@ -45,6 +46,10 @@ const navbarXOR = document.querySelector('.navbar-XOR');
     isTaskbar = false;
   });
 }
+
+navbarSave.addEventListener('click', () => {
+  ipcRenderer.send('save-image', '');
+});
 
 menuItem.forEach(item => {
   item.addEventListener('mouseenter', toggleSub, false);

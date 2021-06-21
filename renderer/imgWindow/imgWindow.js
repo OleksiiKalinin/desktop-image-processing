@@ -54,7 +54,8 @@ ipcRenderer.on('url', (_, {imgUrl, imgHeight, imgWidth}) => {
   const lastDotId = name.split('').lastIndexOf('.');
   const preDotName = name.slice(0, lastDotId);
   const postDotName = name.slice(lastDotId+1);
-  const newPath = dirname + '\\' + preDotName + '.bmp';
+  
+  const newPath = 'dirname' + '\\' + preDotName + '.bmp';
   const newTiffPath = newPath.split('\\');
 
   Jimp.read(imgUrl, async (err, img) => {
@@ -63,9 +64,9 @@ ipcRenderer.on('url', (_, {imgUrl, imgHeight, imgWidth}) => {
     } else {
       if (postDotName === 'tif' || postDotName === 'tiff') {
         await img.writeAsync(newPath);
-        div.style.background = 'url(' + newTiffPath.join('/') + ') no-repeat center';
+        div.style.background = 'url(' + newTiffPath.join('/').replace(/\s/g, "\\ ") + ') no-repeat center';
       } else {
-        div.style.background = 'url(' + newUrl.join('/') + ') no-repeat center';
+        div.style.background = 'url(' + newUrl.join('/').replace(/\s/g, "\\ ") + ') no-repeat center';
       }
       div.onmousedown = (event) => {
         profileData = [];

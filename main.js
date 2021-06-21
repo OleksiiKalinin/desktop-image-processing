@@ -1,8 +1,9 @@
 const path = require('path');
+const homeDir = require('os').homedir();
 const fs = require('fs');
 const rimraf = require("rimraf");
 const url = require('url');
-const {app, BrowserWindow, ipcMain} = require('electron');
+const {app, BrowserWindow, ipcMain, dialog} = require('electron');
 const Jimp = require('jimp');
 const createHistogram = require('./renderer/createHistogram/createHistogram.js');
 const normalize = require('./MyFunctions/normalize.js');
@@ -90,7 +91,8 @@ ipcMain.on('add-image-window', (_, fileData) => {
             imgData,
             imgType,
             imgHeight,
-            imgWidth
+            imgWidth,
+            imgName
         });
         // imageWindow.webContents.openDevTools()
     });
@@ -790,6 +792,30 @@ function createErrorWindow() {
         if (errorWindow) errorWindow.close();
     }, 2000);
 }
+
+ipcMain.on('save-image', () => {
+    let url = '', name = '';
+
+    windows_data.forEach(win => {
+        if (win.id === lastFocusedWindow) {
+            url = win.imgUrl;
+            name = win.imgName;
+        }
+    });
+    
+    const desktopDirPlusName = `${homeDir}\\Desktop\\${name}`;
+
+    if (!url) {
+        createErrorWindow();
+        return;
+    }
+
+    dialog.showSaveDialog({title: name, defaultPath: desktopDirPlusName}, (filePath) => {
+        fs.copyFile(url, filePath, (err) => {
+            if (err) throw err;
+        })
+    });
+});
 
 app.whenReady().then(() => {
     createMainWindow();
