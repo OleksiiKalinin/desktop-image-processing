@@ -2,4 +2,6 @@ Development started on March 2021, an University project for Image Processing cl
 
 Based on NodeJS, ElectronJS with Jimp, OpenCV libraries, and own algorithms.
 
-To view: install the release 0.2.0 and lauch 'electron.exe'.
+Available on Windows: 
+
+install the release 0.2.0 and lauch 'electron.exe'.
